@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { FileText, Loader2, Upload, ShieldCheck, CheckCircle2, ClipboardList } from "lucide-react";
@@ -20,29 +20,19 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { useI18n } from "@/lib/i18n";
 import { VILLAGES } from "@/lib/villages";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "129 - ATHOOR Complaint Submission Portal" },
-      {
-        name: "description",
-        content:
-          "Submit your complaint to the 129 - ATHOOR constituency office. Upload your complaint as a PDF.",
-      },
-    ],
-  }),
-  component: ComplaintPortal,
-});
-
 const MAX_PDF_BYTES = 10 * 1024 * 1024;
 
-function ComplaintPortal() {
+export default function ComplaintPortal() {
   const { t } = useI18n();
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState<{ complaintNo: string } | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [selectedVillage, setSelectedVillage] = useState("");
+
+  useEffect(() => {
+    document.title = "129 - ATHOOR Complaint Submission Portal";
+  }, []);
 
   const schema = z.object({
     full_name: z.string().trim().min(2, t("err.fullName")).max(200),

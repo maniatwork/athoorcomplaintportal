@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Loader2, ShieldCheck, ArrowLeft } from "lucide-react";
@@ -12,29 +12,20 @@ import { Card } from "@/components/ui/card";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/auth")({
-  head: () => ({
-    meta: [
-      { title: "Admin Sign In · 129 - ATHOOR Portal" },
-      { name: "description", content: "Sign in to manage citizen complaints." },
-    ],
-  }),
-  component: AuthPage,
-});
-
 const credSchema = z.object({
   email: z.string().trim().email().max(255),
   password: z.string().min(6).max(72),
 });
 
-function AuthPage() {
+export default function AuthPage() {
   const navigate = useNavigate();
   const { t } = useI18n();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    document.title = "Admin Sign In · 129 - ATHOOR Portal";
     const token = localStorage.getItem("admin_token");
-    if (token) navigate({ to: "/admin", replace: true });
+    if (token) navigate("/admin", { replace: true });
   }, [navigate]);
 
   async function signIn(e: React.FormEvent<HTMLFormElement>) {
@@ -66,7 +57,7 @@ function AuthPage() {
 
       const data = await response.json();
       localStorage.setItem("admin_token", data.token);
-      navigate({ to: "/admin", replace: true });
+      navigate("/admin", { replace: true });
     } catch (err) {
       setLoading(false);
       console.error(err);

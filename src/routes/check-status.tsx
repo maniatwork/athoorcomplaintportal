@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
   ShieldCheck,
@@ -20,20 +20,6 @@ import { useI18n } from "@/lib/i18n";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-export const Route = createFileRoute("/check-status")({
-  head: () => ({
-    meta: [
-      { title: "Check Complaint Status · 129 - ATHOOR Portal" },
-      {
-        name: "description",
-        content:
-          "Check the current status of your complaint submitted to the 129 - ATHOOR constituency office.",
-      },
-    ],
-  }),
-  component: CheckStatusPage,
-});
-
 interface ComplaintStatus {
   complaint_id: string;
   customer_name: string;
@@ -47,7 +33,10 @@ interface ComplaintStatus {
   last_updated: string;
 }
 
-function CheckStatusPage() {
+export default function CheckStatusPage() {
+  useEffect(() => {
+    document.title = "Check Complaint Status · 129 - ATHOOR Portal";
+  }, []);
   const { t } = useI18n();
   const [complaintId, setComplaintId] = useState("");
   const [loading, setLoading] = useState(false);

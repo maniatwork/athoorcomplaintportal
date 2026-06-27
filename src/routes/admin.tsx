@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -46,13 +46,6 @@ import {
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/admin")({
-  head: () => ({
-    meta: [{ title: "Admin Dashboard · 129 - ATHOOR Portal" }],
-  }),
-  component: AdminDashboard,
-});
-
 interface Complaint {
   id: string;
   complaint_no: string;
@@ -74,9 +67,13 @@ const COMPLAINT_STATUSES = ["Pending", "Resolved"];
 
 const PAGE_SIZE = 10;
 
-function AdminDashboard() {
+export default function AdminDashboard() {
   const navigate = useNavigate();
   const { t } = useI18n();
+
+  useEffect(() => {
+    document.title = "Admin Dashboard · 129 - ATHOOR Portal";
+  }, []);
   const [checking, setChecking] = useState(true);
   const [loading, setLoading] = useState(true);
   const [complaints, setComplaints] = useState<Complaint[]>([]);
@@ -96,7 +93,7 @@ function AdminDashboard() {
     let active = true;
     const token = localStorage.getItem("admin_token");
     if (!token) {
-      navigate({ to: "/auth", replace: true });
+      navigate("/auth", { replace: true });
       return;
     }
     if (active) {
@@ -112,7 +109,7 @@ function AdminDashboard() {
   async function load(tokenOverride?: string) {
     const token = tokenOverride || localStorage.getItem("admin_token");
     if (!token) {
-      navigate({ to: "/auth", replace: true });
+      navigate("/auth", { replace: true });
       return;
     }
     setLoading(true);
@@ -127,7 +124,7 @@ function AdminDashboard() {
         if (response.status === 401) {
           toast.error(t("admin.requireAdmin"));
           localStorage.removeItem("admin_token");
-          navigate({ to: "/auth", replace: true });
+          navigate("/auth", { replace: true });
           return;
         }
         const errData = await response.json().catch(() => ({}));
@@ -178,7 +175,7 @@ function AdminDashboard() {
     const token = localStorage.getItem("admin_token");
     if (!token) {
       toast.error(t("admin.requireAdmin"));
-      navigate({ to: "/auth", replace: true });
+      navigate("/auth", { replace: true });
       return;
     }
     const downloadUrl = `${API_URL}/api/complaints/${c.id}/download?token=${token}`;
@@ -200,7 +197,7 @@ function AdminDashboard() {
     const token = localStorage.getItem("admin_token");
     if (!token) {
       toast.error(t("admin.requireAdmin"));
-      navigate({ to: "/auth", replace: true });
+      navigate("/auth", { replace: true });
       return;
     }
 
@@ -216,7 +213,7 @@ function AdminDashboard() {
         if (response.status === 401) {
           toast.error(t("admin.requireAdmin"));
           localStorage.removeItem("admin_token");
-          navigate({ to: "/auth", replace: true });
+          navigate("/auth", { replace: true });
           return;
         }
         const errData = await response.json().catch(() => ({}));
@@ -242,7 +239,7 @@ function AdminDashboard() {
     const token = localStorage.getItem("admin_token");
     if (!token) {
       toast.error(t("admin.requireAdmin"));
-      navigate({ to: "/auth", replace: true });
+      navigate("/auth", { replace: true });
       return;
     }
 
@@ -264,7 +261,7 @@ function AdminDashboard() {
         if (response.status === 401) {
           toast.error(t("admin.requireAdmin"));
           localStorage.removeItem("admin_token");
-          navigate({ to: "/auth", replace: true });
+          navigate("/auth", { replace: true });
           return;
         }
         const errData = await response.json().catch(() => ({}));
@@ -289,7 +286,7 @@ function AdminDashboard() {
 
   async function signOut() {
     localStorage.removeItem("admin_token");
-    navigate({ to: "/auth", replace: true });
+    navigate("/auth", { replace: true });
   }
 
   if (checking) {
