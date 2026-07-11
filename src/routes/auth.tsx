@@ -85,6 +85,7 @@ export default function AuthPage() {
           borderBottom: "3px solid #F4B400",
           boxShadow: "0 2px 16px rgba(161,15,20,0.08)",
         }}
+        className="tvk-header-wrap"
       >
         <div
           style={{
@@ -95,18 +96,20 @@ export default function AuthPage() {
             alignItems: "center",
             justifyContent: "space-between",
           }}
+          className="tvk-header-flex"
         >
-          <Link to="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
+          <Link to="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }} className="tvk-logo-title-link">
             <img
               src="/tvk-logo.png"
               alt="TVK Logo"
               style={{ width: "48px", height: "48px", objectFit: "contain", borderRadius: "8px" }}
+              className="tvk-logo-img"
             />
             <div>
-              <p style={{ fontSize: "13px", fontWeight: 700, color: TVK_RED, margin: 0, lineHeight: 1.2 }}>
+              <p style={{ fontSize: "13px", fontWeight: 700, color: TVK_RED, margin: 0, lineHeight: 1.2 }} className="tvk-title-text">
                 Tamilaga Vettri Kazhagam
               </p>
-              <p style={{ fontSize: "11px", color: "#888", margin: "2px 0 0" }}>
+              <p style={{ fontSize: "11px", color: "#888", margin: "2px 0 0" }} className="tvk-subtext">
                 Admin Portal · 129 ATHOOR
               </p>
             </div>
@@ -211,6 +214,7 @@ export default function AuthPage() {
                     required
                     placeholder="admin@example.com"
                     style={{ borderRadius: "10px", borderColor: "#e5e5e5", fontSize: "14px" }}
+                    className="mobile-input"
                   />
                 </div>
                 <div>
@@ -225,6 +229,7 @@ export default function AuthPage() {
                     required
                     minLength={6}
                     style={{ borderRadius: "10px", borderColor: "#e5e5e5", fontSize: "14px" }}
+                    className="mobile-input"
                   />
                 </div>
                 <button
@@ -250,6 +255,7 @@ export default function AuthPage() {
                     letterSpacing: "0.02em",
                     transition: "opacity 0.2s",
                   }}
+                  className="mobile-btn"
                   onMouseEnter={(e) => {
                     if (!loading) (e.currentTarget as HTMLElement).style.opacity = "0.92";
                   }}

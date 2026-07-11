@@ -98,6 +98,7 @@ export default function CheckStatusPage() {
           top: 0,
           zIndex: 50,
         }}
+        className="tvk-header-wrap"
       >
         <div
           style={{
@@ -109,27 +110,29 @@ export default function CheckStatusPage() {
             justifyContent: "space-between",
             gap: "12px",
           }}
+          className="tvk-header-flex"
         >
-          <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
+          <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }} className="tvk-logo-title-link">
             <img
               src="/tvk-logo.png"
               alt="TVK Logo"
               style={{ width: "52px", height: "52px", objectFit: "contain", flexShrink: 0, borderRadius: "8px" }}
+              className="tvk-logo-img"
             />
             <div>
-              <p style={{ fontSize: "13px", fontWeight: 700, color: TVK_RED, margin: 0, lineHeight: 1.2 }}>
+              <p style={{ fontSize: "13px", fontWeight: 700, color: TVK_RED, margin: 0, lineHeight: 1.2 }} className="tvk-title-text">
                 Tamilaga Vettri Kazhagam
               </p>
-              <p style={{ fontSize: "12px", fontWeight: 600, color: "#1a1a1a", margin: "2px 0 0", lineHeight: 1.2 }}>
+              <p style={{ fontSize: "12px", fontWeight: 600, color: "#1a1a1a", margin: "2px 0 0", lineHeight: 1.2 }} className="tvk-subtitle-text">
                 Customer Complaint Portal
               </p>
-              <p style={{ fontSize: "10px", color: "#888", margin: "1px 0 0" }}>
+              <p style={{ fontSize: "10px", color: "#888", margin: "1px 0 0" }} className="tvk-subtext">
                 Assembly Constituency – 129 ATHOOR
               </p>
             </div>
           </Link>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }} className="tvk-nav-container">
             <LanguageToggle />
             <Link
               to="/"
@@ -145,6 +148,7 @@ export default function CheckStatusPage() {
                 alignItems: "center",
                 gap: "4px",
               }}
+              className="mobile-btn-inline"
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLElement).style.color = TVK_RED;
                 (e.currentTarget as HTMLElement).style.borderColor = TVK_RED;
@@ -160,6 +164,7 @@ export default function CheckStatusPage() {
             <Link
               to="/auth"
               style={{ fontSize: "12px", fontWeight: 500, color: "#6b6b6b", textDecoration: "none" }}
+              className="mobile-btn-inline"
             >
               {t("nav.admin")}
             </Link>
@@ -254,7 +259,7 @@ export default function CheckStatusPage() {
             >
               {t("status.complaintId")} <span style={{ color: "#dc2626" }}>*</span>
             </Label>
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div style={{ display: "flex", gap: "10px" }} className="mobile-flex-col">
               <Input
                 id="complaint-id-input"
                 value={complaintId}
@@ -263,6 +268,7 @@ export default function CheckStatusPage() {
                 style={{ flex: 1, fontFamily: "monospace", borderRadius: "10px", fontSize: "14px" }}
                 required
                 autoComplete="off"
+                className="mobile-input"
               />
               <button
                 id="check-status-btn"
@@ -281,12 +287,14 @@ export default function CheckStatusPage() {
                   cursor: loading ? "not-allowed" : "pointer",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: "6px",
                   flexShrink: 0,
                   boxShadow: loading ? "none" : "0 3px 10px rgba(161,15,20,0.25)",
                   whiteSpace: "nowrap",
                   transition: "opacity 0.2s",
                 }}
+                className="mobile-btn"
                 onMouseEnter={(e) => {
                   if (!loading) (e.currentTarget as HTMLElement).style.opacity = "0.9";
                 }}
@@ -422,8 +430,9 @@ export default function CheckStatusPage() {
               </div>
             </div>
 
-            {/* Details Grid */}
-            <div style={{ padding: "24px" }}>
+            {/* Details Layout */}
+            <div style={{ padding: "24px" }} className="p-4 md:p-6">
+              {/* Desktop Details Grid */}
               <div
                 style={{
                   display: "grid",
@@ -431,6 +440,7 @@ export default function CheckStatusPage() {
                   gap: "16px",
                   marginBottom: "16px",
                 }}
+                className="hidden md:grid"
               >
                 <TVKDetailRow label={t("status.card.id")} value={result.complaint_id} mono />
                 <TVKDetailRow label={t("status.card.name")} value={result.customer_name} />
@@ -447,33 +457,45 @@ export default function CheckStatusPage() {
                 />
               </div>
 
-              {/* Pending Reason */}
-              {result.status === "Pending" && result.pending_reason && (
-                <div
-                  style={{
-                    background: "#fffbeb",
-                    border: "1px solid #fde68a",
-                    borderLeft: "4px solid #f59e0b",
-                    borderRadius: "10px",
-                    padding: "14px 16px",
-                    marginBottom: "16px",
-                  }}
-                >
-                  <p
-                    style={{
-                      fontSize: "10px",
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.06em",
-                      color: "#92400e",
-                      margin: "0 0 4px",
-                    }}
-                  >
-                    {t("status.card.pendingReason")}
-                  </p>
-                  <p style={{ fontSize: "13px", color: "#78350f", margin: 0 }}>{result.pending_reason}</p>
+              {/* Mobile Details List */}
+              <div className="block md:hidden space-y-0 divide-y divide-gray-100 border border-gray-100 rounded-xl overflow-hidden mb-4">
+                <div className="flex flex-col p-4 bg-gray-50/50">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("status.card.id")}</span>
+                  <span className="text-sm font-mono font-bold text-red-700 mt-0.5">{result.complaint_id}</span>
                 </div>
-              )}
+                <div className="flex flex-col p-4">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("status.card.name")}</span>
+                  <span className="text-sm font-semibold text-gray-800 mt-0.5">{result.customer_name}</span>
+                </div>
+                <div className="flex flex-col p-4">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("status.card.village")}</span>
+                  <span className="text-sm font-semibold text-gray-800 mt-0.5">{result.village || "—"}</span>
+                </div>
+                <div className="flex flex-col p-4">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Status</span>
+                  <div className="mt-1">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                      result.status === "Resolved" ? "bg-green-50 text-green-700 border border-green-200" : "bg-amber-50 text-amber-700 border border-amber-200"
+                    }`}>
+                      {result.status}
+                    </span>
+                  </div>
+                </div>
+                {result.status === "Pending" && result.pending_reason && (
+                  <div className="flex flex-col p-4 bg-amber-50/30">
+                    <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wider">{t("status.card.pendingReason")}</span>
+                    <span className="text-sm font-medium text-amber-900 mt-0.5">{result.pending_reason}</span>
+                  </div>
+                )}
+                <div className="flex flex-col p-4">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("status.card.submitted")}</span>
+                  <span className="text-sm font-medium text-gray-700 mt-0.5">{new Date(result.submitted_date).toLocaleString()}</span>
+                </div>
+                <div className="flex flex-col p-4">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t("status.card.lastUpdated")}</span>
+                  <span className="text-sm font-medium text-gray-700 mt-0.5">{new Date(result.last_updated).toLocaleString()}</span>
+                </div>
+              </div>
 
               {/* Reset button */}
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -492,6 +514,7 @@ export default function CheckStatusPage() {
                     fontWeight: 600,
                     cursor: "pointer",
                   }}
+                  className="mobile-btn"
                   onMouseEnter={(e) => {
                     (e.currentTarget as HTMLElement).style.borderColor = TVK_RED;
                     (e.currentTarget as HTMLElement).style.color = TVK_RED;
@@ -537,6 +560,7 @@ export default function CheckStatusPage() {
                 fontWeight: 700,
                 textDecoration: "none",
               }}
+              className="mobile-btn"
             >
               Submit a Complaint
             </Link>

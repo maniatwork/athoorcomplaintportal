@@ -202,6 +202,7 @@ export default function ComplaintPortal() {
                   fontWeight: 600,
                   cursor: "pointer",
                 }}
+                className="mobile-btn"
               >
                 {t("success.again")}
               </button>
@@ -219,6 +220,7 @@ export default function ComplaintPortal() {
                   alignItems: "center",
                   gap: "6px",
                 }}
+                className="mobile-btn"
               >
                 <ClipboardList style={{ width: 15, height: 15 }} />
                 Track Status
@@ -364,6 +366,7 @@ export default function ComplaintPortal() {
                   boxShadow: "0 4px 14px rgba(161,15,20,0.30)",
                   transition: "box-shadow 0.2s, transform 0.2s",
                 }}
+                className="mobile-btn"
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 20px rgba(161,15,20,0.40)";
                   (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
@@ -486,7 +489,7 @@ export default function ComplaintPortal() {
                   onValueChange={setSelectedVillage}
                   required
                 >
-                  <SelectTrigger id="village-select" style={{ borderColor: "#e5e5e5", borderRadius: "10px" }}>
+                  <SelectTrigger id="village-select" className="mobile-input w-full select-trigger" style={{ borderColor: "#e5e5e5", borderRadius: "10px" }}>
                     <SelectValue placeholder={t("form.village.ph")} />
                   </SelectTrigger>
                   <SelectContent className="max-h-64 overflow-y-auto">
@@ -502,6 +505,7 @@ export default function ComplaintPortal() {
                 <TVKInput
                   name="ward_number"
                   type="number"
+                  inputMode="numeric"
                   min={1}
                   step={1}
                   required
@@ -607,6 +611,7 @@ export default function ComplaintPortal() {
                 transition: "opacity 0.2s, box-shadow 0.2s",
                 letterSpacing: "0.02em",
               }}
+              className="mobile-btn"
               onMouseEnter={(e) => {
                 if (!submitting) (e.currentTarget as HTMLElement).style.opacity = "0.92";
               }}
@@ -665,6 +670,7 @@ export default function ComplaintPortal() {
               flexShrink: 0,
               boxShadow: "0 2px 8px rgba(244,180,0,0.25)",
             }}
+            className="mobile-btn"
           >
             <ClipboardList style={{ width: 14, height: 14 }} />
             Check Status
@@ -731,6 +737,7 @@ function TVKInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <Input
       {...props}
+      className={`mobile-input ${props.className || ""}`}
       style={{
         borderRadius: "10px",
         borderColor: "#e5e5e5",
@@ -754,6 +761,7 @@ function TVKHomeHeader() {
         top: 0,
         zIndex: 50,
       }}
+      className="tvk-header-wrap"
     >
       <div
         style={{
@@ -765,29 +773,31 @@ function TVKHomeHeader() {
           justifyContent: "space-between",
           gap: "12px",
         }}
+        className="tvk-header-flex"
       >
         {/* Logo + Title */}
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
+        <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }} className="tvk-logo-title-link">
           <img
             src="/tvk-logo.png"
             alt="TVK Logo"
             style={{ width: "56px", height: "56px", objectFit: "contain", flexShrink: 0, borderRadius: "8px" }}
+            className="tvk-logo-img"
           />
           <div>
-            <p style={{ fontSize: "14px", fontWeight: 700, color: "#A10F14", margin: 0, lineHeight: 1.2 }}>
+            <p style={{ fontSize: "14px", fontWeight: 700, color: "#A10F14", margin: 0, lineHeight: 1.2 }} className="tvk-title-text">
               Tamilaga Vettri Kazhagam
             </p>
-            <p style={{ fontSize: "12px", fontWeight: 600, color: "#1a1a1a", margin: "2px 0 0", lineHeight: 1.2 }}>
+            <p style={{ fontSize: "12px", fontWeight: 600, color: "#1a1a1a", margin: "2px 0 0", lineHeight: 1.2 }} className="tvk-subtitle-text">
               Customer Complaint Portal
             </p>
-            <p style={{ fontSize: "11px", color: "#888", margin: "1px 0 0", lineHeight: 1.2 }}>
+            <p style={{ fontSize: "11px", color: "#888", margin: "1px 0 0", lineHeight: 1.2 }} className="tvk-subtext">
               Assembly Constituency – 129 ATHOOR
             </p>
           </div>
         </Link>
 
         {/* Nav */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }} className="tvk-nav-container">
           <LanguageToggle />
           <Link
             to="/check-status"
@@ -801,7 +811,7 @@ function TVKHomeHeader() {
               border: "1px solid #A10F14",
               display: "none",
             }}
-            className="nav-check-status"
+            className="nav-check-status mobile-btn-inline"
           >
             Check Status
           </Link>
@@ -814,6 +824,7 @@ function TVKHomeHeader() {
               textDecoration: "none",
               padding: "6px 10px",
             }}
+            className="mobile-btn-inline"
           >
             {t("nav.admin")}
           </Link>

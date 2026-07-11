@@ -21,6 +21,7 @@ export function TVKHeader({ variant = "home" }: TVKHeaderProps) {
         top: 0,
         zIndex: 50,
       }}
+      className="tvk-header-wrap"
     >
       <div
         style={{
@@ -32,9 +33,10 @@ export function TVKHeader({ variant = "home" }: TVKHeaderProps) {
           justifyContent: "space-between",
           gap: "12px",
         }}
+        className="tvk-header-flex"
       >
         {/* Left: Logo + Title block */}
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: "14px", textDecoration: "none", minWidth: 0 }}>
+        <Link to="/" style={{ display: "flex", alignItems: "center", gap: "14px", textDecoration: "none", minWidth: 0 }} className="tvk-logo-title-link">
           {/* TVK Logo */}
           <img
             src="/tvk-logo.png"
@@ -46,6 +48,7 @@ export function TVKHeader({ variant = "home" }: TVKHeaderProps) {
               flexShrink: 0,
               borderRadius: "8px",
             }}
+            className="tvk-logo-img"
           />
           {/* Title block */}
           <div style={{ minWidth: 0 }}>
@@ -58,6 +61,7 @@ export function TVKHeader({ variant = "home" }: TVKHeaderProps) {
                 margin: 0,
                 letterSpacing: "0.01em",
               }}
+              className="tvk-title-text"
             >
               Tamilaga Vettri Kazhagam
             </p>
@@ -69,6 +73,7 @@ export function TVKHeader({ variant = "home" }: TVKHeaderProps) {
                 lineHeight: 1.3,
                 margin: "2px 0 0",
               }}
+              className="tvk-subtitle-text"
             >
               Customer Complaint Portal
             </p>
@@ -79,6 +84,7 @@ export function TVKHeader({ variant = "home" }: TVKHeaderProps) {
                 lineHeight: 1.3,
                 margin: "1px 0 0",
               }}
+              className="tvk-subtext"
             >
               Assembly Constituency – 129 ATHOOR
             </p>
@@ -86,7 +92,7 @@ export function TVKHeader({ variant = "home" }: TVKHeaderProps) {
         </Link>
 
         {/* Right: Nav + Language toggle */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }} className="tvk-nav-container">
           <LanguageToggle />
           {variant === "home" && (
             <>

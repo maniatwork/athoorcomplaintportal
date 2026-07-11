@@ -293,6 +293,12 @@ export default function AdminDashboard() {
     navigate("/auth", { replace: true });
   }
 
+  function handleComplaintUpdate(updated: Complaint) {
+    setComplaints((prev) =>
+      prev.map((x) => (x.id === updated.id ? { ...x, ...updated } : x))
+    );
+  }
+
   if (checking) {
     return (
       <div
@@ -321,6 +327,7 @@ export default function AdminDashboard() {
           top: 0,
           zIndex: 50,
         }}
+        className="tvk-header-wrap"
       >
         <div
           style={{
@@ -332,8 +339,9 @@ export default function AdminDashboard() {
             justifyContent: "space-between",
             gap: "12px",
           }}
+          className="tvk-header-flex"
         >
-          <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
+          <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }} className="tvk-logo-title-link">
             <img
               src="/tvk-logo.png"
               alt="TVK Logo"
@@ -345,18 +353,19 @@ export default function AdminDashboard() {
                 borderRadius: "8px",
                 border: "2px solid rgba(255,255,255,0.3)",
               }}
+              className="tvk-logo-img"
             />
             <div>
-              <p style={{ fontSize: "14px", fontWeight: 700, color: "#ffffff", margin: 0, lineHeight: 1.2 }}>
+              <p style={{ fontSize: "14px", fontWeight: 700, color: "#ffffff", margin: 0, lineHeight: 1.2 }} className="tvk-title-text">
                 {t("admin.title")}
               </p>
-              <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)", margin: "2px 0 0" }}>
+              <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)", margin: "2px 0 0" }} className="tvk-subtext">
                 Tamilaga Vettri Kazhagam · 129 ATHOOR
               </p>
             </div>
           </Link>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }} className="tvk-nav-container">
             <LanguageToggle />
             <button
               onClick={signOut}
@@ -374,6 +383,7 @@ export default function AdminDashboard() {
                 cursor: "pointer",
                 transition: "background 0.15s",
               }}
+              className="mobile-btn-inline"
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.25)";
               }}
@@ -505,7 +515,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Table */}
-          <div style={{ overflowX: "auto" }}>
+          <div style={{ overflowX: "auto" }} className="hidden md:block">
             <Table>
               <TableHeader>
                 <TableRow style={{ background: "linear-gradient(135deg, #fdeaea, #fff9e6)" }}>
@@ -692,6 +702,32 @@ export default function AdminDashboard() {
             </Table>
           </div>
 
+          {/* Mobile Card List (visible on mobile, hidden on tablet/desktop) */}
+          <div className="block md:hidden p-4 space-y-4 bg-gray-50/50">
+            {loading ? (
+              <div className="py-12 text-center">
+                <Loader2
+                  style={{ margin: "0 auto", width: 24, height: 24, color: TVK_RED, animation: "spin 1s linear infinite" }}
+                />
+              </div>
+            ) : pageRows.length === 0 ? (
+              <div className="py-12 text-center text-muted-foreground">
+                {t("admin.empty")}
+              </div>
+            ) : (
+              pageRows.map((c) => (
+                <AdminComplaintCard
+                  key={c.id}
+                  complaint={c}
+                  downloadPdf={downloadPdf}
+                  onDelete={setToDelete}
+                  onUpdate={handleComplaintUpdate}
+                  t={t}
+                />
+              ))
+            )}
+          </div>
+
           {/* Pagination */}
           {filtered.length > 0 && (
             <div
@@ -723,6 +759,7 @@ export default function AdminDashboard() {
                     fontWeight: 600,
                     cursor: currentPage <= 1 ? "not-allowed" : "pointer",
                   }}
+                  className="mobile-btn-inline"
                 >
                   {t("admin.prev")}
                 </button>
@@ -739,6 +776,7 @@ export default function AdminDashboard() {
                     fontWeight: 600,
                     cursor: currentPage >= totalPages ? "not-allowed" : "pointer",
                   }}
+                  className="mobile-btn-inline"
                 >
                   {t("admin.next")}
                 </button>
@@ -957,5 +995,185 @@ function isToday(iso: string) {
     d.getFullYear() === n.getFullYear() &&
     d.getMonth() === n.getMonth() &&
     d.getDate() === n.getDate()
+  );
+}
+
+function AdminComplaintCard({
+  complaint,
+  downloadPdf,
+  onDelete,
+  onUpdate,
+  t,
+}: {
+  complaint: Complaint;
+  downloadPdf: (c: Complaint) => void;
+  onDelete: (c: Complaint) => void;
+  onUpdate: (updated: Complaint) => void;
+  t: any;
+}) {
+  const [status, setStatus] = useState(complaint.status || "Pending");
+  const [pendingReason, setPendingReason] = useState(complaint.pending_reason || "");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setStatus(complaint.status || "Pending");
+    setPendingReason(complaint.pending_reason || "");
+  }, [complaint]);
+
+  const hasChanges = status !== complaint.status || (status === "Pending" && pendingReason !== complaint.pending_reason);
+
+  async function handleSave() {
+    const token = localStorage.getItem("admin_token");
+    if (!token) {
+      toast.error(t("admin.requireAdmin"));
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const response = await fetch(`${API_URL}/api/complaints/${complaint.id}/status`, {
+        method: "PATCH",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status,
+          pendingReason: status === "Pending" ? pendingReason : "",
+        }),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.message || "Failed to update status.");
+      }
+
+      const data = await response.json();
+      onUpdate(data.complaint);
+      toast.success(t("admin.updated"));
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Failed to update status.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="admin-mobile-card">
+      {/* Header Row: ID and Download PDF */}
+      <div className="flex items-center justify-between border-b pb-3 mb-3">
+        <div>
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">ID</span>
+          <span className="font-mono text-sm font-bold text-red-700">{complaint.complaint_no}</span>
+        </div>
+        <button
+          onClick={() => downloadPdf(complaint)}
+          className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors"
+          style={{ minHeight: "36px" }}
+        >
+          <Download style={{ width: 14, height: 14 }} />
+          Download PDF
+        </button>
+      </div>
+
+      {/* Grid of basic info */}
+      <div className="space-y-2 mb-4">
+        <div className="flex justify-between items-center text-xs py-1 border-b border-gray-50">
+          <span className="font-bold text-gray-400 uppercase">Customer Name</span>
+          <span className="font-semibold text-gray-800">{complaint.full_name}</span>
+        </div>
+        <div className="flex justify-between items-center text-xs py-1 border-b border-gray-50">
+          <span className="font-bold text-gray-400 uppercase">Phone</span>
+          <a href={`tel:${complaint.phone}`} className="font-bold text-red-700 hover:underline">{complaint.phone}</a>
+        </div>
+        <div className="flex justify-between items-center text-xs py-1 border-b border-gray-50">
+          <span className="font-bold text-gray-400 uppercase">Village</span>
+          <span className="font-semibold text-gray-800">{complaint.village || "—"}</span>
+        </div>
+        <div className="flex justify-between items-center text-xs py-1 border-b border-gray-50">
+          <span className="font-bold text-gray-400 uppercase">Ward Number</span>
+          <span className="font-semibold text-gray-800">{complaint.ward_number}</span>
+        </div>
+        <div className="flex justify-between items-center text-xs py-1 border-b border-gray-50">
+          <span className="font-bold text-gray-400 uppercase">Last Updated</span>
+          <span className="font-medium text-gray-600">
+            {complaint.last_updated ? new Date(complaint.last_updated).toLocaleString() : "—"}
+          </span>
+        </div>
+      </div>
+
+      {/* Editing Controls */}
+      <div className="space-y-3 pt-2 mb-4 border-t">
+        <div>
+          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Status</label>
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger className="mobile-input w-full select-trigger" style={{ borderColor: "#e5e5e5", borderRadius: "10px" }}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {["Pending", "Resolved"].map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {status === "Pending" && (
+          <div>
+            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Reason for Pending</label>
+            <textarea
+              value={pendingReason}
+              onChange={(e) => setPendingReason(e.target.value)}
+              placeholder="Enter reason for pending status…"
+              rows={2}
+              className="flex w-full rounded-md border border-gray-200 bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+              style={{ fontSize: "16px" }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Actions */}
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={handleSave}
+          disabled={saving || !hasChanges}
+          className="mobile-btn text-white font-bold"
+          style={{
+            background: saving || !hasChanges
+              ? "#d1d5db"
+              : `linear-gradient(135deg, #A10F14, #7d0b0f)`,
+            color: "#fff",
+            cursor: saving || !hasChanges ? "not-allowed" : "pointer",
+            boxShadow: saving || !hasChanges ? "none" : "0 3px 10px rgba(161,15,20,0.20)",
+          }}
+        >
+          {saving ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving Changes…
+            </>
+          ) : (
+            "Save Changes"
+          )}
+        </button>
+
+        <button
+          onClick={() => onDelete(complaint)}
+          className="mobile-btn font-bold"
+          style={{
+            background: "#fff5f5",
+            border: "1px solid #fecaca",
+            color: "#dc2626",
+            cursor: "pointer",
+          }}
+        >
+          Delete Complaint
+        </button>
+      </div>
+    </div>
   );
 }
