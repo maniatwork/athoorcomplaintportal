@@ -17,7 +17,6 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -44,7 +43,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { TVKFooter } from "@/components/TVKHeader";
 import { useI18n } from "@/lib/i18n";
+
+const TVK_RED = "#A10F14";
+const TVK_RED_DARK = "#7d0b0f";
+const TVK_GOLD = "#F4B400";
+const TVK_CREAM = "#FFF8E6";
 
 interface Complaint {
   id: string;
@@ -64,7 +69,6 @@ interface Complaint {
 }
 
 const COMPLAINT_STATUSES = ["Pending", "Resolved"];
-
 const PAGE_SIZE = 10;
 
 export default function AdminDashboard() {
@@ -72,7 +76,7 @@ export default function AdminDashboard() {
   const { t } = useI18n();
 
   useEffect(() => {
-    document.title = "Admin Dashboard · 129 - ATHOOR Portal";
+    document.title = "Admin Dashboard · 129 - ATHOOR Portal | Tamilaga Vettri Kazhagam";
   }, []);
   const [checking, setChecking] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -291,101 +295,271 @@ export default function AdminDashboard() {
 
   if (checking) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-brand" />
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: TVK_CREAM,
+        }}
+      >
+        <Loader2 style={{ width: 28, height: 28, animation: "spin 1s linear infinite", color: TVK_RED }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gradient-hero">
-      <header className="border-b border-border/60 bg-background/80 backdrop-blur sticky top-0 z-10">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 gap-3">
-          <Link to="/" className="flex items-center gap-3 min-w-0">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-brand text-brand-foreground">
-              <ShieldCheck className="h-5 w-5" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-semibold leading-tight truncate">{t("admin.title")}</p>
-              <p className="text-xs text-muted-foreground leading-tight truncate">
-                {t("brand.short")}
+    <main style={{ minHeight: "100vh", background: "#f5f5f7", display: "flex", flexDirection: "column" }}>
+      {/* Admin Header - Red background */}
+      <header
+        style={{
+          background: `linear-gradient(135deg, ${TVK_RED} 0%, ${TVK_RED_DARK} 100%)`,
+          boxShadow: "0 2px 16px rgba(161,15,20,0.25)",
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1400px",
+            margin: "0 auto",
+            padding: "12px 16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "12px",
+          }}
+        >
+          <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
+            <img
+              src="/tvk-logo.png"
+              alt="TVK Logo"
+              style={{
+                width: "44px",
+                height: "44px",
+                objectFit: "contain",
+                flexShrink: 0,
+                borderRadius: "8px",
+                border: "2px solid rgba(255,255,255,0.3)",
+              }}
+            />
+            <div>
+              <p style={{ fontSize: "14px", fontWeight: 700, color: "#ffffff", margin: 0, lineHeight: 1.2 }}>
+                {t("admin.title")}
+              </p>
+              <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)", margin: "2px 0 0" }}>
+                Tamilaga Vettri Kazhagam · 129 ATHOOR
               </p>
             </div>
           </Link>
-          <div className="flex items-center gap-3">
+
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <LanguageToggle />
-            <Button variant="outline" size="sm" onClick={signOut}>
-              <LogOut className="mr-2 h-4 w-4" /> <span className="hidden sm:inline">{t("admin.signOut")}</span>
-            </Button>
+            <button
+              onClick={signOut}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "rgba(255,255,255,0.15)",
+                color: "#ffffff",
+                border: "1px solid rgba(255,255,255,0.3)",
+                padding: "7px 14px",
+                borderRadius: "8px",
+                fontSize: "12px",
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "background 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.25)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.15)";
+              }}
+            >
+              <LogOut style={{ width: 13, height: 13 }} />
+              <span style={{ display: "none" }} className="admin-signout-text">{t("admin.signOut")}</span>
+            </button>
           </div>
         </div>
+
+        {/* Gold bottom accent */}
+        <div style={{ height: "3px", background: `linear-gradient(135deg, ${TVK_GOLD}, #d4a000)` }} />
+
+        <style>{`
+          @keyframes spin { to { transform: rotate(360deg); } }
+          @media (min-width: 640px) {
+            .admin-signout-text { display: inline !important; }
+          }
+        `}</style>
       </header>
 
-      <section className="mx-auto max-w-7xl px-4 py-8 space-y-6">
-        <div className="grid gap-4 sm:grid-cols-3">
-          <StatCard
+      {/* Dashboard Content */}
+      <div style={{ flex: 1, maxWidth: "1400px", margin: "0 auto", width: "100%", padding: "24px 16px 48px" }}>
+
+        {/* Stat Cards */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "16px",
+            marginBottom: "24px",
+          }}
+        >
+          <AdminStatCard
             label={t("admin.stat.total")}
             value={complaints.length}
-            icon={<Inbox className="h-5 w-5" />}
+            icon={<Inbox style={{ width: 22, height: 22, color: TVK_RED }} />}
+            color={TVK_RED}
           />
-          <StatCard
+          <AdminStatCard
             label={t("admin.stat.today")}
             value={complaints.filter((c) => isToday(c.created_at)).length}
-            icon={<FileText className="h-5 w-5" />}
+            icon={<FileText style={{ width: 22, height: 22, color: TVK_GOLD }} />}
+            color={TVK_GOLD}
           />
-          <StatCard
+          <AdminStatCard
             label={t("admin.stat.filtered")}
             value={filtered.length}
-            icon={<Search className="h-5 w-5" />}
+            icon={<Search style={{ width: 22, height: 22, color: "#6b7280" }} />}
+            color="#6b7280"
           />
         </div>
 
-        <Card className="p-4 sm:p-6 shadow-card">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="lg:col-span-2 relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder={t("admin.search.ph")}
-                className="pl-9"
-              />
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground mb-1 block">{t("admin.dateFrom")}</Label>
-              <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground mb-1 block">{t("admin.dateTo")}</Label>
-              <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+        {/* Main Table Card */}
+        <div
+          style={{
+            background: "#ffffff",
+            borderRadius: "16px",
+            border: "1px solid #e5e5e5",
+            borderTop: `4px solid ${TVK_RED}`,
+            boxShadow: "0 4px 24px -8px rgba(161,15,20,0.10)",
+            overflow: "hidden",
+          }}
+        >
+          {/* Filter Bar */}
+          <div
+            style={{
+              padding: "20px 24px",
+              borderBottom: "1px solid #f0f0f0",
+              background: "#fafafa",
+            }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr",
+                gap: "12px",
+              }}
+              className="admin-filter-grid"
+            >
+              <div style={{ position: "relative" }}>
+                <Search
+                  style={{
+                    position: "absolute",
+                    left: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    width: 16,
+                    height: 16,
+                    color: "#9ca3af",
+                    pointerEvents: "none",
+                  }}
+                />
+                <Input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={t("admin.search.ph")}
+                  style={{ paddingLeft: "36px", borderRadius: "10px", fontSize: "13px" }}
+                />
+              </div>
+              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                <div style={{ flex: 1, minWidth: "140px" }}>
+                  <Label style={{ fontSize: "11px", color: "#888", display: "block", marginBottom: "5px" }}>
+                    {t("admin.dateFrom")}
+                  </Label>
+                  <Input
+                    type="date"
+                    value={dateFrom}
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    style={{ borderRadius: "10px", fontSize: "13px" }}
+                  />
+                </div>
+                <div style={{ flex: 1, minWidth: "140px" }}>
+                  <Label style={{ fontSize: "11px", color: "#888", display: "block", marginBottom: "5px" }}>
+                    {t("admin.dateTo")}
+                  </Label>
+                  <Input
+                    type="date"
+                    value={dateTo}
+                    onChange={(e) => setDateTo(e.target.value)}
+                    style={{ borderRadius: "10px", fontSize: "13px" }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="mt-6 overflow-x-auto rounded-lg border border-border">
+          {/* Table */}
+          <div style={{ overflowX: "auto" }}>
             <Table>
               <TableHeader>
-                <TableRow className="bg-secondary/50">
-                  <TableHead>{t("admin.col.id")}</TableHead>
-                  <TableHead>{t("admin.col.name")}</TableHead>
-                  <TableHead>{t("admin.col.phone")}</TableHead>
-                  <TableHead className="hidden md:table-cell">{t("admin.col.email")}</TableHead>
-                  <TableHead className="hidden lg:table-cell">{t("admin.col.constituency")}</TableHead>
-                  <TableHead className="hidden md:table-cell">{t("admin.col.village")}</TableHead>
-                  <TableHead>{t("admin.col.ward")}</TableHead>
-                  <TableHead>{t("admin.col.pincode")}</TableHead>
-                  <TableHead>{t("admin.col.pdf")}</TableHead>
-                  <TableHead>{t("admin.col.submitted")}</TableHead>
-                  <TableHead>{t("admin.col.status")}</TableHead>
-                  <TableHead className="hidden xl:table-cell">{t("admin.col.pendingReason")}</TableHead>
-                  <TableHead className="hidden lg:table-cell">{t("admin.col.lastUpdated")}</TableHead>
-                  <TableHead className="text-right">{t("admin.col.actions")}</TableHead>
+                <TableRow style={{ background: "linear-gradient(135deg, #fdeaea, #fff9e6)" }}>
+                  <TableHead style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.id")}
+                  </TableHead>
+                  <TableHead style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.name")}
+                  </TableHead>
+                  <TableHead style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.phone")}
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell" style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.email")}
+                  </TableHead>
+                  <TableHead className="hidden lg:table-cell" style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.constituency")}
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell" style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.village")}
+                  </TableHead>
+                  <TableHead style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.ward")}
+                  </TableHead>
+                  <TableHead style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.pincode")}
+                  </TableHead>
+                  <TableHead style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.pdf")}
+                  </TableHead>
+                  <TableHead style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.submitted")}
+                  </TableHead>
+                  <TableHead style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.status")}
+                  </TableHead>
+                  <TableHead className="hidden xl:table-cell" style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.pendingReason")}
+                  </TableHead>
+                  <TableHead className="hidden lg:table-cell" style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.lastUpdated")}
+                  </TableHead>
+                  <TableHead className="text-right" style={{ fontSize: "11px", fontWeight: 700, color: TVK_RED, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {t("admin.col.actions")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={14} className="py-12 text-center">
-                      <Loader2 className="mx-auto h-5 w-5 animate-spin text-brand" />
+                      <Loader2
+                        style={{ margin: "0 auto", width: 24, height: 24, color: TVK_RED, animation: "spin 1s linear infinite" }}
+                      />
                     </TableCell>
                   </TableRow>
                 ) : pageRows.length === 0 ? (
@@ -396,53 +570,119 @@ export default function AdminDashboard() {
                   </TableRow>
                 ) : (
                   pageRows.map((c) => (
-                    <TableRow key={c.id} className="hover:bg-secondary/40">
-                      <TableCell className="font-mono text-xs">{c.complaint_no}</TableCell>
-                      <TableCell className="font-medium">{c.full_name}</TableCell>
-                      <TableCell>{c.phone}</TableCell>
-                      <TableCell className="hidden md:table-cell">{c.email ?? "—"}</TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        {c.assembly_constituency}
+                    <TableRow
+                      key={c.id}
+                      style={{ transition: "background 0.15s" }}
+                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "#fff8f8")}
+                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "")}
+                    >
+                      <TableCell className="font-mono text-xs" style={{ color: TVK_RED, fontWeight: 600 }}>
+                        {c.complaint_no}
                       </TableCell>
-                      <TableCell className="hidden md:table-cell text-xs">{c.village || "—"}</TableCell>
-                      <TableCell>{c.ward_number}</TableCell>
-                      <TableCell>{c.pincode}</TableCell>
+                      <TableCell className="font-medium" style={{ fontSize: "13px" }}>{c.full_name}</TableCell>
+                      <TableCell style={{ fontSize: "13px" }}>{c.phone}</TableCell>
+                      <TableCell className="hidden md:table-cell" style={{ fontSize: "12px", color: "#666" }}>{c.email ?? "—"}</TableCell>
+                      <TableCell className="hidden lg:table-cell" style={{ fontSize: "12px" }}>{c.assembly_constituency}</TableCell>
+                      <TableCell className="hidden md:table-cell text-xs" style={{ color: "#666" }}>{c.village || "—"}</TableCell>
+                      <TableCell style={{ fontSize: "13px" }}>{c.ward_number}</TableCell>
+                      <TableCell style={{ fontSize: "13px" }}>{c.pincode}</TableCell>
                       <TableCell>
-                        <Button size="sm" variant="outline" onClick={() => downloadPdf(c)}>
-                          <Download className="h-3.5 w-3.5" />
-                        </Button>
+                        <button
+                          onClick={() => downloadPdf(c)}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "8px",
+                            border: `1px solid ${TVK_RED}`,
+                            background: "#fdeaea",
+                            color: TVK_RED,
+                            cursor: "pointer",
+                            transition: "background 0.15s",
+                          }}
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.background = TVK_RED;
+                            (e.currentTarget as HTMLElement).style.color = "#fff";
+                          }}
+                          onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.background = "#fdeaea";
+                            (e.currentTarget as HTMLElement).style.color = TVK_RED;
+                          }}
+                        >
+                          <Download style={{ width: 13, height: 13 }} />
+                        </button>
                       </TableCell>
-                      <TableCell className="text-xs whitespace-nowrap">
+                      <TableCell className="text-xs whitespace-nowrap" style={{ color: "#666" }}>
                         {new Date(c.created_at).toLocaleString()}
                       </TableCell>
                       <TableCell>
                         <StatusBadge status={c.status} />
                       </TableCell>
-                      <TableCell className="hidden xl:table-cell text-xs max-w-[140px] truncate">
+                      <TableCell className="hidden xl:table-cell text-xs max-w-[140px] truncate" style={{ color: "#666" }}>
                         {c.pending_reason || "—"}
                       </TableCell>
-                      <TableCell className="hidden lg:table-cell text-xs whitespace-nowrap">
+                      <TableCell className="hidden lg:table-cell text-xs whitespace-nowrap" style={{ color: "#666" }}>
                         {c.last_updated ? new Date(c.last_updated).toLocaleString() : "—"}
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-brand hover:text-brand hover:bg-brand-soft/30"
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "4px" }}>
+                          <button
                             onClick={() => openEditDialog(c)}
                             title={t("admin.edit")}
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: "8px",
+                              border: `1px solid ${TVK_GOLD}`,
+                              background: "#fffbeb",
+                              color: "#d97706",
+                              cursor: "pointer",
+                              transition: "background 0.15s",
+                            }}
+                            onMouseEnter={(e) => {
+                              (e.currentTarget as HTMLElement).style.background = TVK_GOLD;
+                              (e.currentTarget as HTMLElement).style.color = "#1a1a1a";
+                            }}
+                            onMouseLeave={(e) => {
+                              (e.currentTarget as HTMLElement).style.background = "#fffbeb";
+                              (e.currentTarget as HTMLElement).style.color = "#d97706";
+                            }}
                           >
-                            <Pencil className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            <Pencil style={{ width: 12, height: 12 }} />
+                          </button>
+                          <button
                             onClick={() => setToDelete(c)}
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: "8px",
+                              border: "1px solid #fecaca",
+                              background: "#fff5f5",
+                              color: "#dc2626",
+                              cursor: "pointer",
+                              transition: "background 0.15s",
+                            }}
+                            onMouseEnter={(e) => {
+                              (e.currentTarget as HTMLElement).style.background = "#dc2626";
+                              (e.currentTarget as HTMLElement).style.color = "#fff";
+                              (e.currentTarget as HTMLElement).style.borderColor = "#dc2626";
+                            }}
+                            onMouseLeave={(e) => {
+                              (e.currentTarget as HTMLElement).style.background = "#fff5f5";
+                              (e.currentTarget as HTMLElement).style.color = "#dc2626";
+                              (e.currentTarget as HTMLElement).style.borderColor = "#fecaca";
+                            }}
                           >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                            <Trash2 style={{ width: 13, height: 13 }} />
+                          </button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -452,42 +692,70 @@ export default function AdminDashboard() {
             </Table>
           </div>
 
+          {/* Pagination */}
           {filtered.length > 0 && (
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm">
-              <p className="text-muted-foreground">
+            <div
+              style={{
+                padding: "16px 24px",
+                borderTop: "1px solid #f0f0f0",
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "12px",
+                background: "#fafafa",
+              }}
+            >
+              <p style={{ fontSize: "12px", color: "#888", margin: 0 }}>
                 {t("admin.page", { current: currentPage, total: totalPages, n: filtered.length })}
               </p>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
+              <div style={{ display: "flex", gap: "8px" }}>
+                <button
                   disabled={currentPage <= 1}
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  style={{
+                    padding: "7px 14px",
+                    borderRadius: "8px",
+                    border: "1px solid #e5e5e5",
+                    background: currentPage <= 1 ? "#f5f5f5" : "#fff",
+                    color: currentPage <= 1 ? "#aaa" : "#333",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    cursor: currentPage <= 1 ? "not-allowed" : "pointer",
+                  }}
                 >
                   {t("admin.prev")}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
+                </button>
+                <button
                   disabled={currentPage >= totalPages}
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  style={{
+                    padding: "7px 14px",
+                    borderRadius: "8px",
+                    border: `1px solid ${TVK_RED}`,
+                    background: currentPage >= totalPages ? "#f5f5f5" : TVK_RED,
+                    color: currentPage >= totalPages ? "#aaa" : "#fff",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    cursor: currentPage >= totalPages ? "not-allowed" : "pointer",
+                  }}
                 >
                   {t("admin.next")}
-                </Button>
+                </button>
               </div>
             </div>
           )}
-        </Card>
-      </section>
+        </div>
+      </div>
+
+      <TVKFooter />
 
       {/* Edit Status Dialog */}
       <AlertDialog open={!!editingComplaint} onOpenChange={(o) => !o && setEditingComplaint(null)}>
         <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("admin.editStatus.title")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {editingComplaint?.complaint_no}
-            </AlertDialogDescription>
+            <AlertDialogTitle style={{ color: TVK_RED }}>{t("admin.editStatus.title")}</AlertDialogTitle>
+            <AlertDialogDescription>{editingComplaint?.complaint_no}</AlertDialogDescription>
           </AlertDialogHeader>
 
           <div className="space-y-4 py-2">
@@ -533,7 +801,10 @@ export default function AdminDashboard() {
             <AlertDialogAction
               onClick={saveEditStatus}
               disabled={editSaving}
-              className="bg-gradient-brand text-brand-foreground hover:opacity-95"
+              style={{
+                background: `linear-gradient(135deg, ${TVK_RED}, ${TVK_RED_DARK})`,
+                color: "#fff",
+              }}
             >
               {editSaving ? (
                 <>
@@ -568,42 +839,114 @@ export default function AdminDashboard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (min-width: 640px) {
+          .admin-signout-text { display: inline !important; }
+          .admin-filter-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+        @media (min-width: 1024px) {
+          .admin-filter-grid { grid-template-columns: 2fr 1fr !important; }
+        }
+      `}</style>
     </main>
   );
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const config: Record<string, { cls: string; label: string }> = {
-    Pending: { cls: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300", label: "Pending" },
-    Resolved: { cls: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300", label: "Resolved" },
+  const styles: Record<string, React.CSSProperties> = {
+    Pending: {
+      background: "#fffbeb",
+      color: "#92400e",
+      border: "1px solid #fde68a",
+    },
+    Resolved: {
+      background: "#f0fdf4",
+      color: "#15803d",
+      border: "1px solid #86efac",
+    },
   };
-  const c = config[status] ?? { cls: "bg-secondary text-secondary-foreground", label: status };
+  const style = styles[status] ?? {
+    background: "#f5f5f5",
+    color: "#333",
+    border: "1px solid #e5e5e5",
+  };
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${c.cls}`}>
-      {c.label}
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        padding: "3px 10px",
+        borderRadius: "999px",
+        fontSize: "11px",
+        fontWeight: 700,
+        whiteSpace: "nowrap",
+        ...style,
+      }}
+    >
+      {status}
     </span>
   );
 }
 
-function StatCard({
+function AdminStatCard({
   label,
   value,
   icon,
+  color,
 }: {
   label: string;
   value: number;
   icon: React.ReactNode;
+  color: string;
 }) {
   return (
-    <Card className="p-5 shadow-soft flex items-center justify-between">
+    <div
+      style={{
+        background: "#ffffff",
+        borderRadius: "14px",
+        border: "1px solid #e5e5e5",
+        borderTop: `4px solid ${color}`,
+        padding: "20px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+        transition: "box-shadow 0.2s, transform 0.2s",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.10)";
+        (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)";
+        (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+      }}
+    >
       <div>
-        <p className="text-sm text-muted-foreground">{label}</p>
-        <p className="mt-1 text-3xl font-bold tracking-tight">{value}</p>
+        <p style={{ fontSize: "12px", color: "#888", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
+          {label}
+        </p>
+        <p style={{ fontSize: "32px", fontWeight: 800, color: "#1a1a1a", margin: 0, lineHeight: 1 }}>
+          {value}
+        </p>
       </div>
-      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-soft text-brand">
+      <div
+        style={{
+          width: "48px",
+          height: "48px",
+          borderRadius: "12px",
+          background: `${color}18`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          border: `1px solid ${color}30`,
+        }}
+      >
         {icon}
       </div>
-    </Card>
+    </div>
   );
 }
 

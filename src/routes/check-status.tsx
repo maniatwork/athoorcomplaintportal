@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
-  ShieldCheck,
   ClipboardList,
   Loader2,
   CheckCircle2,
@@ -11,14 +10,18 @@ import {
   RefreshCw,
   ArrowLeft,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { TVKFooter } from "@/components/TVKHeader";
 import { useI18n } from "@/lib/i18n";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+const TVK_RED = "#A10F14";
+const TVK_RED_DARK = "#7d0b0f";
+const TVK_GOLD = "#F4B400";
+const TVK_CREAM = "#FFF8E6";
 
 interface ComplaintStatus {
   complaint_id: string;
@@ -35,7 +38,7 @@ interface ComplaintStatus {
 
 export default function CheckStatusPage() {
   useEffect(() => {
-    document.title = "Check Complaint Status · 129 - ATHOOR Portal";
+    document.title = "Check Complaint Status · 129 - ATHOOR Portal | Tamilaga Vettri Kazhagam";
   }, []);
   const { t } = useI18n();
   const [complaintId, setComplaintId] = useState("");
@@ -81,38 +84,82 @@ export default function CheckStatusPage() {
     setComplaintId("");
   }
 
-  const statusConfig = result
-    ? getStatusConfig(result.status)
-    : null;
+  const statusConfig = result ? getStatusConfig(result.status) : null;
 
   return (
-    <main className="min-h-screen bg-gradient-hero">
-      {/* Header */}
-      <header className="border-b border-border/60 bg-background/70 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-brand text-brand-foreground shadow-soft">
-              <ShieldCheck className="h-5 w-5" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-semibold leading-tight truncate">{t("brand.short")}</p>
-              <p className="text-xs text-muted-foreground leading-tight truncate">
-                {t("brand.tagline")}
+    <main style={{ minHeight: "100vh", background: "#ffffff", display: "flex", flexDirection: "column" }}>
+      {/* TVK Header */}
+      <header
+        style={{
+          background: "#ffffff",
+          borderBottom: "3px solid #F4B400",
+          boxShadow: "0 2px 16px rgba(161,15,20,0.10)",
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "10px 16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "12px",
+          }}
+        >
+          <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
+            <img
+              src="/tvk-logo.png"
+              alt="TVK Logo"
+              style={{ width: "52px", height: "52px", objectFit: "contain", flexShrink: 0, borderRadius: "8px" }}
+            />
+            <div>
+              <p style={{ fontSize: "13px", fontWeight: 700, color: TVK_RED, margin: 0, lineHeight: 1.2 }}>
+                Tamilaga Vettri Kazhagam
+              </p>
+              <p style={{ fontSize: "12px", fontWeight: 600, color: "#1a1a1a", margin: "2px 0 0", lineHeight: 1.2 }}>
+                Customer Complaint Portal
+              </p>
+              <p style={{ fontSize: "10px", color: "#888", margin: "1px 0 0" }}>
+                Assembly Constituency – 129 ATHOOR
               </p>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
+          </Link>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <LanguageToggle />
             <Link
               to="/"
-              className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-brand transition-colors"
+              style={{
+                fontSize: "12px",
+                fontWeight: 500,
+                color: "#6b6b6b",
+                textDecoration: "none",
+                padding: "6px 12px",
+                borderRadius: "8px",
+                border: "1px solid #e5e5e5",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.color = TVK_RED;
+                (e.currentTarget as HTMLElement).style.borderColor = TVK_RED;
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.color = "#6b6b6b";
+                (e.currentTarget as HTMLElement).style.borderColor = "#e5e5e5";
+              }}
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft style={{ width: 13, height: 13 }} />
               {t("status.backHome")}
             </Link>
             <Link
               to="/auth"
-              className="hidden sm:inline text-sm font-medium text-muted-foreground hover:text-brand transition-colors"
+              style={{ fontSize: "12px", fontWeight: 500, color: "#6b6b6b", textDecoration: "none" }}
             >
               {t("nav.admin")}
             </Link>
@@ -120,142 +167,399 @@ export default function CheckStatusPage() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="mx-auto max-w-3xl px-4 pt-12 pb-8 text-center">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-xs font-medium text-brand">
-          <ClipboardList className="h-3.5 w-3.5" />
-          {t("status.badge")}
-        </span>
-        <h1 className="mt-4 text-3xl sm:text-5xl font-bold tracking-tight">{t("status.title")}</h1>
-        <p className="mt-4 text-muted-foreground sm:text-lg max-w-xl mx-auto">{t("status.desc")}</p>
+      {/* Hero section */}
+      <section
+        style={{
+          background: `linear-gradient(180deg, ${TVK_CREAM} 0%, #ffffff 100%)`,
+          padding: "40px 16px 28px",
+          textAlign: "center",
+          borderBottom: "1px solid #f0e8d6",
+        }}
+      >
+        <div style={{ maxWidth: "600px", margin: "0 auto" }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              background: "#fdeaea",
+              color: TVK_RED,
+              fontSize: "11px",
+              fontWeight: 700,
+              padding: "5px 14px",
+              borderRadius: "999px",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              marginBottom: "14px",
+              border: "1px solid rgba(161,15,20,0.15)",
+            }}
+          >
+            <ClipboardList style={{ width: 12, height: 12 }} />
+            {t("status.badge")}
+          </span>
+          <h1
+            style={{
+              fontSize: "clamp(22px, 5vw, 34px)",
+              fontWeight: 800,
+              color: "#1a1a1a",
+              margin: "0 0 12px",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            {t("status.title")}
+          </h1>
+          <p style={{ color: "#666", fontSize: "14px", lineHeight: 1.7, margin: 0 }}>
+            {t("status.desc")}
+          </p>
+        </div>
       </section>
 
-      {/* Search Card */}
-      <section className="mx-auto max-w-3xl px-4 pb-20 space-y-6">
-        <Card className="p-6 sm:p-8 shadow-card">
-          <form onSubmit={handleCheck} className="space-y-4">
-            <div>
-              <Label htmlFor="complaint-id-input" className="mb-2 block text-sm font-medium">
-                {t("status.complaintId")} <span className="text-destructive">*</span>
-              </Label>
-              <div className="flex gap-3">
-                <Input
-                  id="complaint-id-input"
-                  value={complaintId}
-                  onChange={(e) => setComplaintId(e.target.value)}
-                  placeholder={t("status.complaintId.ph")}
-                  className="flex-1 font-mono"
-                  required
-                  autoComplete="off"
-                />
-                <Button
-                  id="check-status-btn"
-                  type="submit"
-                  disabled={loading}
-                  className="bg-gradient-brand text-brand-foreground shadow-soft hover:opacity-95 shrink-0"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {t("status.checking")}
-                    </>
-                  ) : (
-                    t("status.check")
-                  )}
-                </Button>
-              </div>
+      {/* Main content */}
+      <div
+        style={{
+          flex: 1,
+          maxWidth: "720px",
+          margin: "0 auto",
+          width: "100%",
+          padding: "36px 16px 56px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+        }}
+      >
+        {/* Search Card */}
+        <div
+          style={{
+            background: "#ffffff",
+            borderRadius: "16px",
+            border: "1px solid #e5e5e5",
+            borderTop: `4px solid ${TVK_RED}`,
+            boxShadow: "0 4px 24px -8px rgba(161,15,20,0.12)",
+            padding: "28px",
+          }}
+        >
+          <div style={{ marginBottom: "16px" }}>
+            <h2 style={{ fontSize: "16px", fontWeight: 700, color: "#1a1a1a", margin: "0 0 4px" }}>
+              Track Your Complaint
+            </h2>
+            <p style={{ fontSize: "12px", color: "#888", margin: 0 }}>
+              Enter your Complaint ID to view the current status
+            </p>
+          </div>
+
+          <form onSubmit={handleCheck}>
+            <Label
+              htmlFor="complaint-id-input"
+              style={{ fontSize: "13px", fontWeight: 600, color: "#333", display: "block", marginBottom: "8px" }}
+            >
+              {t("status.complaintId")} <span style={{ color: "#dc2626" }}>*</span>
+            </Label>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <Input
+                id="complaint-id-input"
+                value={complaintId}
+                onChange={(e) => setComplaintId(e.target.value)}
+                placeholder={t("status.complaintId.ph")}
+                style={{ flex: 1, fontFamily: "monospace", borderRadius: "10px", fontSize: "14px" }}
+                required
+                autoComplete="off"
+              />
+              <button
+                id="check-status-btn"
+                type="submit"
+                disabled={loading}
+                style={{
+                  background: loading
+                    ? "#d1d5db"
+                    : `linear-gradient(135deg, ${TVK_RED}, ${TVK_RED_DARK})`,
+                  color: "#fff",
+                  border: "none",
+                  padding: "10px 20px",
+                  borderRadius: "10px",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  cursor: loading ? "not-allowed" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  flexShrink: 0,
+                  boxShadow: loading ? "none" : "0 3px 10px rgba(161,15,20,0.25)",
+                  whiteSpace: "nowrap",
+                  transition: "opacity 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  if (!loading) (e.currentTarget as HTMLElement).style.opacity = "0.9";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.opacity = "1";
+                }}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 style={{ width: 14, height: 14, animation: "spin 1s linear infinite" }} />
+                    {t("status.checking")}
+                  </>
+                ) : (
+                  t("status.check")
+                )}
+              </button>
             </div>
           </form>
-        </Card>
+        </div>
 
         {/* Not Found */}
         {notFound && (
-          <Card className="p-6 shadow-card border-destructive/30 bg-destructive/5 animate-in fade-in slide-in-from-bottom-4">
-            <div className="flex flex-col items-center gap-3 text-center py-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
-                <XCircle className="h-7 w-7 text-destructive" />
-              </div>
-              <p className="text-base font-semibold text-destructive">{t("status.notFound")}</p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={resetSearch}
-                className="mt-1"
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Try Again
-              </Button>
+          <div
+            style={{
+              background: "#fff5f5",
+              borderRadius: "16px",
+              border: "1px solid #fecaca",
+              borderLeft: "4px solid #dc2626",
+              padding: "24px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "12px",
+              textAlign: "center",
+              animation: "slideUp 0.3s ease",
+            }}
+          >
+            <div
+              style={{
+                width: "56px",
+                height: "56px",
+                borderRadius: "50%",
+                background: "#fee2e2",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <XCircle style={{ width: 28, height: 28, color: "#dc2626" }} />
             </div>
-          </Card>
+            <p style={{ fontWeight: 700, color: "#dc2626", fontSize: "15px", margin: 0 }}>
+              {t("status.notFound")}
+            </p>
+            <p style={{ color: "#888", fontSize: "13px", margin: 0 }}>
+              Please check your Complaint ID and try again.
+            </p>
+            <button
+              onClick={resetSearch}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "#fff",
+                border: "1px solid #dc2626",
+                color: "#dc2626",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                fontSize: "13px",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              <RefreshCw style={{ width: 13, height: 13 }} />
+              Try Again
+            </button>
+          </div>
         )}
 
         {/* Result Card */}
         {result && statusConfig && (
-          <Card
-            className={`p-6 sm:p-8 shadow-card border-2 animate-in fade-in slide-in-from-bottom-4 ${statusConfig.borderClass}`}
+          <div
+            style={{
+              background: "#ffffff",
+              borderRadius: "16px",
+              border: "1px solid #e5e5e5",
+              borderTop: `4px solid ${statusConfig.accentColor}`,
+              boxShadow: "0 4px 24px -8px rgba(0,0,0,0.10)",
+              overflow: "hidden",
+              animation: "slideUp 0.3s ease",
+            }}
           >
             {/* Status Header */}
-            <div className={`flex items-center gap-4 p-4 rounded-xl mb-6 ${statusConfig.bgClass}`}>
-              <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${statusConfig.iconBgClass}`}>
+            <div
+              style={{
+                background: statusConfig.headerBg,
+                padding: "20px 24px",
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+              }}
+            >
+              <div
+                style={{
+                  width: "52px",
+                  height: "52px",
+                  borderRadius: "50%",
+                  background: statusConfig.iconBg,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
                 {statusConfig.icon}
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-widest opacity-70">
+                <p
+                  style={{
+                    fontSize: "10px",
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "#888",
+                    margin: "0 0 3px",
+                  }}
+                >
                   {t("status.card.status")}
                 </p>
-                <p className={`text-xl font-bold ${statusConfig.textClass}`}>
+                <p style={{ fontSize: "20px", fontWeight: 800, color: statusConfig.textColor, margin: "0 0 3px" }}>
                   {result.status}
                 </p>
-                <p className="text-sm opacity-80 mt-0.5">{result.status_description}</p>
+                <p style={{ fontSize: "12px", color: "#666", margin: 0 }}>{result.status_description}</p>
               </div>
             </div>
 
             {/* Details Grid */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              <DetailRow label={t("status.card.id")} value={result.complaint_id} mono />
-              <DetailRow label={t("status.card.name")} value={result.customer_name} />
-              <DetailRow label={t("status.card.village")} value={result.village || "—"} />
-              <DetailRow label={t("status.card.constituency")} value={result.assembly_constituency} />
-              <DetailRow label={t("status.card.ward")} value={String(result.ward_number)} />
-              <DetailRow
-                label={t("status.card.submitted")}
-                value={new Date(result.submitted_date).toLocaleString()}
-              />
-              <DetailRow
-                label={t("status.card.lastUpdated")}
-                value={new Date(result.last_updated).toLocaleString()}
-              />
-            </div>
-
-            {/* Complaint Update / Reason — shown only for Pending */}
-            {result.status === "Pending" && result.pending_reason && (
-              <div className="mt-4 rounded-lg border border-amber-300/50 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-700/30 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400 mb-1">
-                  {t("status.card.pendingReason")}
-                </p>
-                <p className="text-sm text-amber-900 dark:text-amber-200">{result.pending_reason}</p>
+            <div style={{ padding: "24px" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                  gap: "16px",
+                  marginBottom: "16px",
+                }}
+              >
+                <TVKDetailRow label={t("status.card.id")} value={result.complaint_id} mono />
+                <TVKDetailRow label={t("status.card.name")} value={result.customer_name} />
+                <TVKDetailRow label={t("status.card.village")} value={result.village || "—"} />
+                <TVKDetailRow label={t("status.card.constituency")} value={result.assembly_constituency} />
+                <TVKDetailRow label={t("status.card.ward")} value={String(result.ward_number)} />
+                <TVKDetailRow
+                  label={t("status.card.submitted")}
+                  value={new Date(result.submitted_date).toLocaleString()}
+                />
+                <TVKDetailRow
+                  label={t("status.card.lastUpdated")}
+                  value={new Date(result.last_updated).toLocaleString()}
+                />
               </div>
-            )}
 
-            {/* Reset button */}
-            <div className="mt-6 flex justify-end">
-              <Button variant="outline" size="sm" onClick={resetSearch}>
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Check Another
-              </Button>
+              {/* Pending Reason */}
+              {result.status === "Pending" && result.pending_reason && (
+                <div
+                  style={{
+                    background: "#fffbeb",
+                    border: "1px solid #fde68a",
+                    borderLeft: "4px solid #f59e0b",
+                    borderRadius: "10px",
+                    padding: "14px 16px",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: "10px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                      color: "#92400e",
+                      margin: "0 0 4px",
+                    }}
+                  >
+                    {t("status.card.pendingReason")}
+                  </p>
+                  <p style={{ fontSize: "13px", color: "#78350f", margin: 0 }}>{result.pending_reason}</p>
+                </div>
+              )}
+
+              {/* Reset button */}
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button
+                  onClick={resetSearch}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "#fff",
+                    border: "1px solid #e5e5e5",
+                    color: "#6b6b6b",
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.borderColor = TVK_RED;
+                    (e.currentTarget as HTMLElement).style.color = TVK_RED;
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.borderColor = "#e5e5e5";
+                    (e.currentTarget as HTMLElement).style.color = "#6b6b6b";
+                  }}
+                >
+                  <RefreshCw style={{ width: 12, height: 12 }} />
+                  Check Another
+                </button>
+              </div>
             </div>
-          </Card>
+          </div>
         )}
-      </section>
 
-      <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground">
-        {t("footer.copy", { year: new Date().getFullYear() })}
-      </footer>
+        {/* Informational note */}
+        {!result && !notFound && (
+          <div
+            style={{
+              background: TVK_CREAM,
+              borderRadius: "12px",
+              padding: "18px 24px",
+              border: "1px solid #f0e8d6",
+              textAlign: "center",
+            }}
+          >
+            <p style={{ fontSize: "13px", color: "#888", margin: "0 0 8px" }}>
+              Need to submit a complaint?
+            </p>
+            <Link
+              to="/"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                background: `linear-gradient(135deg, ${TVK_GOLD}, #d4a000)`,
+                color: "#1a1a1a",
+                padding: "8px 18px",
+                borderRadius: "8px",
+                fontSize: "13px",
+                fontWeight: 700,
+                textDecoration: "none",
+              }}
+            >
+              Submit a Complaint
+            </Link>
+          </div>
+        )}
+      </div>
+
+      <TVKFooter />
+
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </main>
   );
 }
 
-function DetailRow({
+function TVKDetailRow({
   label,
   value,
   mono,
@@ -265,9 +569,37 @@ function DetailRow({
   mono?: boolean;
 }) {
   return (
-    <div className="space-y-0.5">
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{label}</p>
-      <p className={`text-sm font-semibold ${mono ? "font-mono" : ""}`}>{value}</p>
+    <div
+      style={{
+        background: "#fafafa",
+        borderRadius: "8px",
+        padding: "10px 12px",
+        border: "1px solid #f0f0f0",
+      }}
+    >
+      <p
+        style={{
+          fontSize: "10px",
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
+          color: "#888",
+          margin: "0 0 3px",
+        }}
+      >
+        {label}
+      </p>
+      <p
+        style={{
+          fontSize: "13px",
+          fontWeight: 600,
+          color: "#1a1a1a",
+          margin: 0,
+          fontFamily: mono ? "monospace" : "inherit",
+        }}
+      >
+        {value}
+      </p>
     </div>
   );
 }
@@ -278,20 +610,20 @@ function getStatusConfig(status: StatusType) {
   switch (status) {
     case "Resolved":
       return {
-        borderClass: "border-green-400/50",
-        bgClass: "bg-green-50 dark:bg-green-950/30",
-        iconBgClass: "bg-green-100 dark:bg-green-900/50",
-        icon: <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400" />,
-        textClass: "text-green-700 dark:text-green-400",
+        accentColor: "#16a34a",
+        headerBg: "#f0fdf4",
+        iconBg: "#dcfce7",
+        icon: <CheckCircle2 style={{ width: 26, height: 26, color: "#16a34a" }} />,
+        textColor: "#15803d",
       };
     case "Pending":
     default:
       return {
-        borderClass: "border-amber-400/50",
-        bgClass: "bg-amber-50 dark:bg-amber-950/30",
-        iconBgClass: "bg-amber-100 dark:bg-amber-900/50",
-        icon: <Clock className="h-6 w-6 text-amber-600 dark:text-amber-400" />,
-        textClass: "text-amber-700 dark:text-amber-400",
+        accentColor: "#f59e0b",
+        headerBg: "#fffbeb",
+        iconBg: "#fef3c7",
+        icon: <Clock style={{ width: 26, height: 26, color: "#d97706" }} />,
+        textColor: "#b45309",
       };
   }
 }
